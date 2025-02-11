@@ -25,8 +25,13 @@ export function Editor({ value, onChange }: EditorProps) {
         padding: { top: 16, bottom: 16 },
         overviewRulerBorder: false,
         renderLineHighlight: "all",
-        renderIndentGuides: true,
+        guides: {
+          indentation: true,
+          bracketPairs: true,
+        },
         scrollbar: {
+          vertical: "visible",
+          horizontal: "visible",
           verticalScrollbarSize: 12,
           horizontalScrollbarSize: 12,
           useShadows: true,
@@ -49,5 +54,9 @@ export function Editor({ value, onChange }: EditorProps) {
     }
   }, [value]);
 
-  return <div ref={editorRef} className="h-full w-full bg-background border-sidebar-border" />;
+  return (
+    <div className="h-full w-full bg-zinc-950 border-l border-r border-zinc-800">
+      <div ref={editorRef} className="h-full w-full" />
+    </div>
+  );
 }

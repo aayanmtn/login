@@ -53,9 +53,9 @@ export function Chat({ onGenerate, apiKey, provider, model }: ChatProps) {
   };
 
   return (
-    <div className="flex flex-col h-full bg-sidebar">
-      <div className="p-4 border-b border-sidebar-border bg-gradient-to-r from-sidebar via-sidebar/50 to-sidebar">
-        <h2 className="text-lg font-semibold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+    <div className="flex flex-col h-full bg-zinc-900">
+      <div className="px-6 py-4 border-b border-zinc-800 bg-gradient-to-r from-zinc-900 via-zinc-800 to-zinc-900">
+        <h2 className="text-lg font-semibold bg-gradient-to-r from-emerald-400 to-emerald-600 bg-clip-text text-transparent">
           Chat
         </h2>
       </div>
@@ -72,10 +72,10 @@ export function Chat({ onGenerate, apiKey, provider, model }: ChatProps) {
             }`}
           >
             <div
-              className={`inline-block px-4 py-2 rounded-lg shadow-md transition-colors ${
+              className={`inline-block px-4 py-2 rounded-lg shadow-lg ${
                 msg.role === "user"
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-sidebar-accent text-sidebar-accent-foreground"
+                  ? "bg-emerald-600 text-white"
+                  : "bg-zinc-800 text-zinc-100"
               }`}
             >
               <div className="text-sm whitespace-pre-wrap">{msg.content}</div>
@@ -84,7 +84,7 @@ export function Chat({ onGenerate, apiKey, provider, model }: ChatProps) {
         ))}
       </ScrollArea>
 
-      <div className="p-4 border-t border-sidebar-border bg-gradient-to-r from-sidebar via-sidebar/50 to-sidebar">
+      <div className="p-4 border-t border-zinc-800 bg-gradient-to-r from-zinc-900 via-zinc-800 to-zinc-900">
         <div className="flex gap-2">
           <Input
             value={input}
@@ -92,12 +92,12 @@ export function Chat({ onGenerate, apiKey, provider, model }: ChatProps) {
             onKeyPress={(e) => e.key === "Enter" && sendMessage()}
             placeholder="Describe your infrastructure..."
             disabled={isLoading || !apiKey}
-            className="bg-background border-sidebar-border focus:border-primary transition-colors"
+            className="bg-zinc-950 border-zinc-800 focus:border-emerald-500 text-zinc-100 placeholder:text-zinc-500"
           />
           <Button 
             onClick={sendMessage} 
             disabled={isLoading || !apiKey}
-            className="bg-primary hover:bg-primary/90 transition-colors"
+            className="bg-emerald-600 hover:bg-emerald-700 text-white transition-colors"
           >
             <Send className="h-4 w-4" />
           </Button>

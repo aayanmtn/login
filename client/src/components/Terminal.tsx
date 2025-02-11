@@ -11,11 +11,10 @@ export function Terminal() {
     if (terminalRef.current && !xtermRef.current) {
       const term = new XTerm({
         theme: {
-          background: "#1a1b1e",
+          background: "#121212",
           foreground: "#ffffff",
-          cursor: "rgba(255, 255, 255, 0.5)",
-          selection: "rgba(255, 255, 255, 0.3)",
-          black: "#1a1b1e",
+          cursor: "#00ff00",
+          black: "#000000",
           blue: "#5c5cff",
           cyan: "#00ffff",
           green: "#00ff00",
@@ -23,6 +22,14 @@ export function Terminal() {
           red: "#ff0000",
           white: "#ffffff",
           yellow: "#ffff00",
+          brightBlack: "#808080",
+          brightBlue: "#0000ff",
+          brightCyan: "#00ffff",
+          brightGreen: "#00ff00",
+          brightMagenta: "#ff00ff",
+          brightRed: "#ff0000",
+          brightWhite: "#ffffff",
+          brightYellow: "#ffff00",
         },
         fontSize: 14,
         fontFamily: "monospace",
@@ -53,8 +60,8 @@ export function Terminal() {
   }, []);
 
   return (
-    <div className="h-full w-full p-4 bg-sidebar border-sidebar-border">
-      <div ref={terminalRef} className="h-full w-full rounded-lg overflow-hidden" />
+    <div className="h-full w-full p-4 bg-zinc-900">
+      <div ref={terminalRef} className="h-full w-full rounded-lg overflow-hidden border border-zinc-800" />
     </div>
   );
 }
