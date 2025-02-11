@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
 import { LLMSelect } from "@/components/LLMSelect";
 import { FileTree } from "@/components/FileTree";
-import { Chat } from "@/components/Chat";
 import {
   ResizableHandle,
   ResizablePanel,
@@ -115,27 +114,33 @@ export default function Home() {
         <ResizablePanelGroup direction="horizontal">
           {/* Left Sidebar */}
           <ResizablePanel defaultSize={15} minSize={10} className="bg-zinc-900">
-            <div className="h-full flex flex-col">
+            <ResizablePanelGroup direction="vertical">
               {/* File Tree */}
-              <div className="flex-1 overflow-auto">
-                <FileTree items={mockFiles} onSelect={() => {}} />
-              </div>
+              <ResizablePanel defaultSize={70}>
+                <div className="h-full overflow-auto">
+                  <FileTree items={mockFiles} onSelect={() => {}} />
+                </div>
+              </ResizablePanel>
+
+              <ResizableHandle className="h-1.5 bg-zinc-800 hover:bg-emerald-500/20 transition-colors" />
 
               {/* Chat Input */}
-              <div className="p-4 border-t border-zinc-800">
-                <div className="flex gap-2">
-                  <Input
-                    value={prompt}
-                    onChange={(e) => setPrompt(e.target.value)}
-                    placeholder="Send a message..."
-                    className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500"
-                  />
-                  <Button variant="outline" className="border-zinc-700 hover:border-zinc-600">
-                    Send
-                  </Button>
+              <ResizablePanel defaultSize={30}>
+                <div className="h-full flex flex-col justify-end p-4">
+                  <div className="flex gap-2">
+                    <Input
+                      value={prompt}
+                      onChange={(e) => setPrompt(e.target.value)}
+                      placeholder="Send a message..."
+                      className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500"
+                    />
+                    <Button variant="outline" className="border-zinc-700 hover:border-zinc-600">
+                      Send
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            </div>
+              </ResizablePanel>
+            </ResizablePanelGroup>
           </ResizablePanel>
 
           <ResizableHandle className="w-1.5 bg-zinc-800 hover:bg-emerald-500/20 transition-colors" />
