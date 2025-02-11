@@ -11,6 +11,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
+import { Documentation } from "@/components/Documentation"; // Assuming this component exists
 
 const mockFiles = [
   {
@@ -114,29 +115,34 @@ export default function Home() {
         <ResizablePanelGroup direction="horizontal">
           {/* Left Sidebar */}
           <ResizablePanel defaultSize={15} minSize={10} className="bg-zinc-900">
-            <ResizablePanelGroup direction="vertical">
+            <ResizablePanelGroup direction="horizontal">
               {/* File Tree */}
-              <ResizablePanel defaultSize={70}>
+              <ResizablePanel defaultSize={50}>
                 <div className="h-full overflow-auto">
                   <FileTree items={mockFiles} onSelect={() => {}} />
                 </div>
               </ResizablePanel>
 
-              <ResizableHandle className="h-1.5 bg-zinc-800 hover:bg-emerald-500/20 transition-colors" />
+              <ResizableHandle className="w-1.5 bg-zinc-800 hover:bg-emerald-500/20 transition-colors" />
 
               {/* Chat Input */}
-              <ResizablePanel defaultSize={30}>
-                <div className="h-full flex flex-col justify-end p-4">
-                  <div className="flex gap-2">
-                    <Input
-                      value={prompt}
-                      onChange={(e) => setPrompt(e.target.value)}
-                      placeholder="Send a message..."
-                      className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500"
-                    />
-                    <Button variant="outline" className="border-zinc-700 hover:border-zinc-600">
-                      Send
-                    </Button>
+              <ResizablePanel defaultSize={50}>
+                <div className="h-full flex flex-col">
+                  <div className="flex-1">
+                    <Documentation />
+                  </div>
+                  <div className="p-4 border-t border-zinc-800">
+                    <div className="flex gap-2">
+                      <Input
+                        value={prompt}
+                        onChange={(e) => setPrompt(e.target.value)}
+                        placeholder="Send a message..."
+                        className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500"
+                      />
+                      <Button variant="outline" className="border-zinc-700 hover:border-zinc-600">
+                        Send
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </ResizablePanel>
