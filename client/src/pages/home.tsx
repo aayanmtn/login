@@ -113,39 +113,50 @@ export default function Home() {
       {/* Main Content */}
       <div className="flex-1 overflow-hidden">
         <ResizablePanelGroup direction="horizontal">
+          {/* Left Sidebar */}
           <ResizablePanel defaultSize={15} minSize={10} className="bg-zinc-900">
-            <FileTree items={mockFiles} onSelect={() => {}} />
-          </ResizablePanel>
-
-          <ResizableHandle className="w-1.5 bg-zinc-800 hover:bg-emerald-500/20 transition-colors" />
-
-          <ResizablePanel defaultSize={55}>
-            <Editor value={code} onChange={setCode} />
-          </ResizablePanel>
-
-          <ResizableHandle className="w-1.5 bg-zinc-800 hover:bg-emerald-500/20 transition-colors" />
-
-          <ResizablePanel defaultSize={30}>
             <div className="h-full flex flex-col">
-              <Terminal />
+              {/* File Tree */}
+              <div className="flex-1 overflow-auto">
+                <FileTree items={mockFiles} onSelect={() => {}} />
+              </div>
+
+              {/* Chat Input */}
+              <div className="p-4 border-t border-zinc-800">
+                <div className="flex gap-2">
+                  <Input
+                    value={prompt}
+                    onChange={(e) => setPrompt(e.target.value)}
+                    placeholder="Send a message..."
+                    className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500"
+                  />
+                  <Button variant="outline" className="border-zinc-700 hover:border-zinc-600">
+                    Send
+                  </Button>
+                </div>
+              </div>
             </div>
           </ResizablePanel>
-        </ResizablePanelGroup>
-      </div>
 
-      {/* Bolt Chat */}
-      <div className="border-t border-zinc-800 bg-zinc-900/50 p-4">
-        <div className="flex gap-2 items-center">
-          <Input
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            placeholder="Send a message..."
-            className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500"
-          />
-          <Button variant="outline" className="border-zinc-700 hover:border-zinc-600">
-            Send
-          </Button>
-        </div>
+          <ResizableHandle className="w-1.5 bg-zinc-800 hover:bg-emerald-500/20 transition-colors" />
+
+          {/* Main Editor and Terminal */}
+          <ResizablePanel defaultSize={85}>
+            <ResizablePanelGroup direction="vertical">
+              {/* Editor */}
+              <ResizablePanel defaultSize={70}>
+                <Editor value={code} onChange={setCode} />
+              </ResizablePanel>
+
+              <ResizableHandle className="h-1.5 bg-zinc-800 hover:bg-emerald-500/20 transition-colors" />
+
+              {/* Terminal */}
+              <ResizablePanel defaultSize={30}>
+                <Terminal />
+              </ResizablePanel>
+            </ResizablePanelGroup>
+          </ResizablePanel>
+        </ResizablePanelGroup>
       </div>
     </div>
   );
