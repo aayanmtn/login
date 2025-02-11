@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Send } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { generateIaC } from "@/lib/openai";
+import { motion } from "framer-motion";
 
 interface ChatProps {
   onGenerate: (code: string) => void;
@@ -53,32 +54,37 @@ export function Chat({ onGenerate, apiKey, provider, model }: ChatProps) {
 
   return (
     <div className="flex flex-col h-full bg-sidebar">
-      <div className="p-4 border-b bg-sidebar">
-        <h2 className="text-lg font-semibold text-sidebar-foreground">Chat</h2>
+      <div className="p-4 border-b border-sidebar-border bg-gradient-to-r from-sidebar via-sidebar/50 to-sidebar">
+        <h2 className="text-lg font-semibold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+          Chat
+        </h2>
       </div>
 
       <ScrollArea className="flex-1 p-4">
         {messages.map((msg, i) => (
-          <div
+          <motion.div
             key={i}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3 }}
             className={`mb-4 ${
               msg.role === "user" ? "text-right" : "text-left"
             }`}
           >
             <div
-              className={`inline-block px-4 py-2 rounded-lg ${
+              className={`inline-block px-4 py-2 rounded-lg shadow-md transition-colors ${
                 msg.role === "user"
                   ? "bg-primary text-primary-foreground"
-                  : "bg-muted"
+                  : "bg-sidebar-accent text-sidebar-accent-foreground"
               }`}
             >
-              {msg.content}
+              <div className="text-sm whitespace-pre-wrap">{msg.content}</div>
             </div>
-          </div>
+          </motion.div>
         ))}
       </ScrollArea>
 
-      <div className="p-4 border-t bg-sidebar">
+      <div className="p-4 border-t border-sidebar-border bg-gradient-to-r from-sidebar via-sidebar/50 to-sidebar">
         <div className="flex gap-2">
           <Input
             value={input}
@@ -86,9 +92,13 @@ export function Chat({ onGenerate, apiKey, provider, model }: ChatProps) {
             onKeyPress={(e) => e.key === "Enter" && sendMessage()}
             placeholder="Describe your infrastructure..."
             disabled={isLoading || !apiKey}
-            className="bg-background"
+            className="bg-background border-sidebar-border focus:border-primary transition-colors"
           />
-          <Button onClick={sendMessage} disabled={isLoading || !apiKey}>
+          <Button 
+            onClick={sendMessage} 
+            disabled={isLoading || !apiKey}
+            className="bg-primary hover:bg-primary/90 transition-colors"
+          >
             <Send className="h-4 w-4" />
           </Button>
         </div>

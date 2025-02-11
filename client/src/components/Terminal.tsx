@@ -13,10 +13,22 @@ export function Terminal() {
         theme: {
           background: "#1a1b1e",
           foreground: "#ffffff",
+          cursor: "rgba(255, 255, 255, 0.5)",
+          selection: "rgba(255, 255, 255, 0.3)",
+          black: "#1a1b1e",
+          blue: "#5c5cff",
+          cyan: "#00ffff",
+          green: "#00ff00",
+          magenta: "#ff00ff",
+          red: "#ff0000",
+          white: "#ffffff",
+          yellow: "#ffff00",
         },
         fontSize: 14,
         fontFamily: "monospace",
         cursorBlink: true,
+        cursorStyle: "bar",
+        allowTransparency: true,
       });
 
       const fitAddon = new FitAddon();
@@ -25,7 +37,7 @@ export function Terminal() {
       fitAddon.fit();
 
       xtermRef.current = term;
-      term.write("Welcome to IaC Generator Terminal\r\n$ ");
+      term.write("\x1b[32mWelcome to IaC Generator Terminal\x1b[0m\r\n$ ");
 
       term.onData((data) => {
         term.write(data);
@@ -40,5 +52,9 @@ export function Terminal() {
     }
   }, []);
 
-  return <div ref={terminalRef} className="h-full w-full p-2" />;
+  return (
+    <div className="h-full w-full p-4 bg-sidebar border-sidebar-border">
+      <div ref={terminalRef} className="h-full w-full rounded-lg overflow-hidden" />
+    </div>
+  );
 }

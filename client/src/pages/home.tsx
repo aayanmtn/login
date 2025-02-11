@@ -68,10 +68,12 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-background">
       <div className="h-screen flex flex-col">
-        <header className="border-b p-4">
-          <div className="flex justify-between items-center">
-            <h1 className="text-2xl font-bold text-primary">
-              Infrastructure as Code Generator
+        <header className="border-b p-4 bg-gradient-to-r from-background via-sidebar to-background">
+          <div className="flex justify-between items-center max-w-[2000px] mx-auto">
+            <h1 className="text-3xl font-bold text-primary">
+              <span className="bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
+                Infrastructure as Code Generator
+              </span>
             </h1>
             <div className="flex items-center gap-4">
               <LLMSelect
@@ -80,10 +82,10 @@ export default function Home() {
                 onProviderChange={setSelectedProvider}
                 onModelChange={setSelectedModel}
               />
-              <Button variant="outline" size="icon">
+              <Button variant="outline" size="icon" className="hover:border-primary transition-colors">
                 <Settings className="h-4 w-4" />
               </Button>
-              <Button onClick={downloadProject}>
+              <Button onClick={downloadProject} className="bg-primary hover:bg-primary/90 transition-colors">
                 <Download className="mr-2 h-4 w-4" />
                 Export
               </Button>
@@ -92,13 +94,13 @@ export default function Home() {
         </header>
 
         <ResizablePanelGroup direction="horizontal" className="flex-1">
-          <ResizablePanel defaultSize={20} minSize={15}>
-            <div className="h-full border-r">
+          <ResizablePanel defaultSize={20} minSize={15} className="bg-sidebar border-r border-sidebar-border">
+            <div className="h-full">
               <FileTree items={mockFiles} onSelect={() => {}} />
             </div>
           </ResizablePanel>
 
-          <ResizableHandle />
+          <ResizableHandle className="w-1.5 bg-sidebar-border hover:bg-primary/50 transition-colors" />
 
           <ResizablePanel defaultSize={50}>
             <div className="h-full">
@@ -106,7 +108,7 @@ export default function Home() {
             </div>
           </ResizablePanel>
 
-          <ResizableHandle />
+          <ResizableHandle className="w-1.5 bg-sidebar-border hover:bg-primary/50 transition-colors" />
 
           <ResizablePanel defaultSize={30}>
             <ResizablePanelGroup direction="vertical">
@@ -118,7 +120,7 @@ export default function Home() {
                   model={selectedModel}
                 />
               </ResizablePanel>
-              <ResizableHandle />
+              <ResizableHandle className="h-1.5 bg-sidebar-border hover:bg-primary/50 transition-colors" />
               <ResizablePanel defaultSize={40}>
                 <Terminal />
               </ResizablePanel>

@@ -22,6 +22,15 @@ export function Editor({ value, onChange }: EditorProps) {
         lineNumbers: "on",
         scrollBeyondLastLine: false,
         wordWrap: "on",
+        padding: { top: 16, bottom: 16 },
+        overviewRulerBorder: false,
+        renderLineHighlight: "all",
+        renderIndentGuides: true,
+        scrollbar: {
+          verticalScrollbarSize: 12,
+          horizontalScrollbarSize: 12,
+          useShadows: true,
+        },
       });
 
       editorInstance.current.onDidChangeModelContent(() => {
@@ -40,5 +49,5 @@ export function Editor({ value, onChange }: EditorProps) {
     }
   }, [value]);
 
-  return <div ref={editorRef} className="h-full w-full" />;
+  return <div ref={editorRef} className="h-full w-full bg-background border-sidebar-border" />;
 }
