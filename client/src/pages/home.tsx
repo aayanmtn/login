@@ -1,154 +1,68 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Editor } from "@/components/Editor";
 import { Terminal } from "@/components/Terminal";
-import { Chat } from "@/components/Chat";
 import { Button } from "@/components/ui/button";
-import { Download, Settings } from "lucide-react";
+import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { ApiKeyModal } from "@/components/ApiKeyModal";
-import { FileTree } from "@/components/FileTree";
 import { LLMSelect } from "@/components/LLMSelect";
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup,
-} from "@/components/ui/resizable";
-import { getKeyForProvider } from "@/lib/keyManager";
-
-const mockFiles = [
-  {
-    id: "1",
-    name: "Project",
-    type: "folder" as const,
-    children: [
-      {
-        id: "2",
-        name: "main.tf",
-        type: "file" as const,
-      },
-      {
-        id: "3",
-        name: "variables.tf",
-        type: "file" as const,
-      },
-    ],
-  },
-];
 
 export default function Home() {
+  const [prompt, setPrompt] = useState("");
   const [code, setCode] = useState("");
   const [selectedProvider, setSelectedProvider] = useState("openai");
   const [selectedModel, setSelectedModel] = useState("gpt-4o");
-  const [showApiKeyModal, setShowApiKeyModal] = useState(true);
   const { toast } = useToast();
 
-  // Get the API key for the current provider
-  const apiKey = getKeyForProvider(selectedProvider);
-
-  const downloadProject = () => {
-    const blob = new Blob([code], { type: "text/plain" });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "project.tf";
-    a.click();
-    window.URL.revokeObjectURL(url);
-
-    toast({
-      title: "Project Downloaded",
-      description: "Your project has been downloaded successfully.",
-    });
-  };
-
-  const handleApiKeySubmit = (key: string) => {
-    toast({
-      title: "API Key Saved",
-      description: `Your ${selectedProvider} API key has been saved successfully.`,
-    });
-  };
-
-  useEffect(() => {
-    const key = getKeyForProvider(selectedProvider);
-    setShowApiKeyModal(!key);
-  }, [selectedProvider]);
-
   return (
-    <div className="min-h-screen bg-zinc-950">
-      <div className="h-screen flex flex-col">
-        <header className="border-b border-zinc-800 px-6 py-4 bg-gradient-to-r from-zinc-950 via-zinc-900 to-zinc-950">
-          <div className="flex justify-between items-center max-w-[2000px] mx-auto">
-            <h1 className="text-3xl font-bold">
-              <span className="bg-gradient-to-r from-emerald-400 to-emerald-600 bg-clip-text text-transparent">
-                Infrastructure as Code Generator
-              </span>
-            </h1>
-            <div className="flex items-center gap-4">
-              <LLMSelect
-                selectedProvider={selectedProvider}
-                selectedModel={selectedModel}
-                onProviderChange={setSelectedProvider}
-                onModelChange={setSelectedModel}
-              />
-              <Button
-                variant="outline"
-                size="icon"
-                className="border-zinc-800 hover:border-emerald-500 hover:bg-zinc-900 transition-colors"
-              >
-                <Settings className="h-4 w-4 text-zinc-400" />
+    <div className="min-h-screen bg-zinc-950 flex flex-col">
+      <div className="flex-1 flex flex-col items-center justify-center px-4 py-16 max-w-5xl mx-auto w-full">
+        <h1 className="text-4xl font-bold text-white mb-2">What do you want to build?</h1>
+        <p className="text-zinc-400 mb-8">Prompt, run, edit, and deploy full-stack web apps.</p>
+
+        <div className="w-full max-w-2xl space-y-4">
+          <div className="relative">
+            <Input
+              value={prompt}
+              onChange={(e) => setPrompt(e.target.value)}
+              placeholder="How can Bolt help you today?"
+              className="w-full h-[56px] bg-zinc-900/50 border border-zinc-800 rounded-lg text-white placeholder:text-zinc-500 px-4 text-lg"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 text-center text-sm text-zinc-400">
+            <div>
+              <Button variant="link" className="text-zinc-400 hover:text-white">
+                Build a mobile app with NativeScript
               </Button>
-              <Button
-                onClick={downloadProject}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white transition-colors"
-              >
-                <Download className="mr-2 h-4 w-4" />
-                Export
+            </div>
+            <div>
+              <Button variant="link" className="text-zinc-400 hover:text-white">
+                Create a docs site with VitePress
               </Button>
             </div>
           </div>
-        </header>
+        </div>
 
-        <ResizablePanelGroup direction="horizontal" className="flex-1">
-          <ResizablePanel defaultSize={20} minSize={15} className="bg-zinc-900 border-r border-zinc-800">
-            <div className="h-full">
-              <FileTree items={mockFiles} onSelect={() => {}} />
-            </div>
-          </ResizablePanel>
-
-          <ResizableHandle className="w-1.5 bg-zinc-800 hover:bg-emerald-500/20 transition-colors" />
-
-          <ResizablePanel defaultSize={50}>
-            <div className="h-full">
-              <Editor value={code} onChange={setCode} />
-            </div>
-          </ResizablePanel>
-
-          <ResizableHandle className="w-1.5 bg-zinc-800 hover:bg-emerald-500/20 transition-colors" />
-
-          <ResizablePanel defaultSize={30}>
-            <ResizablePanelGroup direction="vertical">
-              <ResizablePanel defaultSize={60}>
-                <Chat
-                  onGenerate={setCode}
-                  apiKey={apiKey}
-                  provider={selectedProvider}
-                  model={selectedModel}
-                />
-              </ResizablePanel>
-              <ResizableHandle className="h-1.5 bg-zinc-800 hover:bg-emerald-500/20 transition-colors" />
-              <ResizablePanel defaultSize={40}>
-                <Terminal />
-              </ResizablePanel>
-            </ResizablePanelGroup>
-          </ResizablePanel>
-        </ResizablePanelGroup>
+        <div className="mt-16 flex gap-4 items-center">
+          <LLMSelect
+            selectedProvider={selectedProvider}
+            selectedModel={selectedModel}
+            onProviderChange={setSelectedProvider}
+            onModelChange={setSelectedModel}
+          />
+        </div>
       </div>
 
-      <ApiKeyModal
-        open={showApiKeyModal}
-        onOpenChange={setShowApiKeyModal}
-        onSubmit={handleApiKeySubmit}
-        provider={selectedProvider}
-      />
+      {code && (
+        <div className="flex-1 grid grid-cols-2 gap-4 p-4 bg-zinc-900">
+          <div className="rounded-lg overflow-hidden border border-zinc-800">
+            <Editor value={code} onChange={setCode} />
+          </div>
+          <div className="rounded-lg overflow-hidden border border-zinc-800">
+            <Terminal />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
