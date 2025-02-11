@@ -9,9 +9,11 @@ import { generateIaC } from "@/lib/openai";
 interface ChatProps {
   onGenerate: (code: string) => void;
   apiKey: string | null;
+  provider: string;
+  model: string;
 }
 
-export function Chat({ onGenerate, apiKey }: ChatProps) {
+export function Chat({ onGenerate, apiKey, provider, model }: ChatProps) {
   const [messages, setMessages] = useState<Array<{ role: string; content: string }>>([]);
   const [input, setInput] = useState("");
   const { toast } = useToast();
@@ -23,7 +25,7 @@ export function Chat({ onGenerate, apiKey }: ChatProps) {
     if (!apiKey) {
       toast({
         title: "API Key Required",
-        description: "Please provide your OpenAI API key to use the chat feature.",
+        description: "Please provide your API key to use the chat feature.",
         variant: "destructive",
       });
       return;
@@ -35,7 +37,7 @@ export function Chat({ onGenerate, apiKey }: ChatProps) {
     setInput("");
 
     try {
-      const response = await generateIaC(input, apiKey);
+      const response = await generateIaC(input, apiKey, provider, model);
       setMessages([...newMessages, { role: "assistant", content: response.message }]);
       onGenerate(response.code);
     } catch (error) {
@@ -50,7 +52,11 @@ export function Chat({ onGenerate, apiKey }: ChatProps) {
   };
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-sidebar">
+      <div className="p-4 border-b bg-sidebar">
+        <h2 className="text-lg font-semibold text-sidebar-foreground">Chat</h2>
+      </div>
+
       <ScrollArea className="flex-1 p-4">
         {messages.map((msg, i) => (
           <div
@@ -72,7 +78,7 @@ export function Chat({ onGenerate, apiKey }: ChatProps) {
         ))}
       </ScrollArea>
 
-      <div className="p-4 border-t">
+      <div className="p-4 border-t bg-sidebar">
         <div className="flex gap-2">
           <Input
             value={input}
@@ -80,6 +86,7 @@ export function Chat({ onGenerate, apiKey }: ChatProps) {
             onKeyPress={(e) => e.key === "Enter" && sendMessage()}
             placeholder="Describe your infrastructure..."
             disabled={isLoading || !apiKey}
+            className="bg-background"
           />
           <Button onClick={sendMessage} disabled={isLoading || !apiKey}>
             <Send className="h-4 w-4" />

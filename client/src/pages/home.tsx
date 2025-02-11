@@ -1,17 +1,45 @@
 import { useState } from "react";
-import { Card } from "@/components/ui/card";
 import { Editor } from "@/components/Editor";
 import { Terminal } from "@/components/Terminal";
 import { Chat } from "@/components/Chat";
 import { Button } from "@/components/ui/button";
-import { Download } from "lucide-react";
+import { Download, Settings } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { ApiKeyModal } from "@/components/ApiKeyModal";
+import { FileTree } from "@/components/FileTree";
+import { LLMSelect } from "@/components/LLMSelect";
+import {
+  ResizableHandle,
+  ResizablePanel,
+  ResizablePanelGroup,
+} from "@/components/ui/resizable";
+
+const mockFiles = [
+  {
+    id: "1",
+    name: "Project",
+    type: "folder" as const,
+    children: [
+      {
+        id: "2",
+        name: "main.tf",
+        type: "file" as const,
+      },
+      {
+        id: "3",
+        name: "variables.tf",
+        type: "file" as const,
+      },
+    ],
+  },
+];
 
 export default function Home() {
   const [code, setCode] = useState("");
   const [apiKey, setApiKey] = useState<string | null>(null);
   const [showApiKeyModal, setShowApiKeyModal] = useState(true);
+  const [selectedProvider, setSelectedProvider] = useState("openai");
+  const [selectedModel, setSelectedModel] = useState("gpt-4o");
   const { toast } = useToast();
 
   const downloadProject = () => {
@@ -39,34 +67,64 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container mx-auto p-4">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-            IaC Generator
-          </h1>
-          <Button onClick={downloadProject}>
-            <Download className="mr-2 h-4 w-4" />
-            Export Project
-          </Button>
-        </div>
+      <div className="h-screen flex flex-col">
+        <header className="border-b p-4">
+          <div className="flex justify-between items-center">
+            <h1 className="text-2xl font-bold text-primary">
+              Infrastructure as Code Generator
+            </h1>
+            <div className="flex items-center gap-4">
+              <LLMSelect
+                selectedProvider={selectedProvider}
+                selectedModel={selectedModel}
+                onProviderChange={setSelectedProvider}
+                onModelChange={setSelectedModel}
+              />
+              <Button variant="outline" size="icon">
+                <Settings className="h-4 w-4" />
+              </Button>
+              <Button onClick={downloadProject}>
+                <Download className="mr-2 h-4 w-4" />
+                Export
+              </Button>
+            </div>
+          </div>
+        </header>
 
-        <div className="grid grid-cols-12 gap-4">
-          <div className="col-span-8">
-            <Card className="h-[calc(100vh-12rem)]">
+        <ResizablePanelGroup direction="horizontal" className="flex-1">
+          <ResizablePanel defaultSize={20} minSize={15}>
+            <div className="h-full border-r">
+              <FileTree items={mockFiles} onSelect={() => {}} />
+            </div>
+          </ResizablePanel>
+
+          <ResizableHandle />
+
+          <ResizablePanel defaultSize={50}>
+            <div className="h-full">
               <Editor value={code} onChange={setCode} />
-            </Card>
-          </div>
+            </div>
+          </ResizablePanel>
 
-          <div className="col-span-4 space-y-4">
-            <Card className="h-[calc(50vh-8rem)]">
-              <Chat onGenerate={setCode} apiKey={apiKey} />
-            </Card>
+          <ResizableHandle />
 
-            <Card className="h-[calc(50vh-8rem)]">
-              <Terminal />
-            </Card>
-          </div>
-        </div>
+          <ResizablePanel defaultSize={30}>
+            <ResizablePanelGroup direction="vertical">
+              <ResizablePanel defaultSize={60}>
+                <Chat
+                  onGenerate={setCode}
+                  apiKey={apiKey}
+                  provider={selectedProvider}
+                  model={selectedModel}
+                />
+              </ResizablePanel>
+              <ResizableHandle />
+              <ResizablePanel defaultSize={40}>
+                <Terminal />
+              </ResizablePanel>
+            </ResizablePanelGroup>
+          </ResizablePanel>
+        </ResizablePanelGroup>
       </div>
 
       <ApiKeyModal
