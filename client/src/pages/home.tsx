@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Editor } from "@/components/Editor";
 import { Terminal } from "@/components/Terminal";
 import { Chat } from "@/components/Chat";
@@ -13,6 +13,7 @@ import {
   ResizablePanel,
   ResizablePanelGroup,
 } from "@/components/ui/resizable";
+import { getKeyForProvider } from "@/lib/keyManager";
 
 const mockFiles = [
   {
@@ -36,11 +37,13 @@ const mockFiles = [
 
 export default function Home() {
   const [code, setCode] = useState("");
-  const [apiKey, setApiKey] = useState<string | null>(null);
-  const [showApiKeyModal, setShowApiKeyModal] = useState(true);
   const [selectedProvider, setSelectedProvider] = useState("openai");
   const [selectedModel, setSelectedModel] = useState("gpt-4o");
+  const [showApiKeyModal, setShowApiKeyModal] = useState(true);
   const { toast } = useToast();
+
+  // Get the API key for the current provider
+  const apiKey = getKeyForProvider(selectedProvider);
 
   const downloadProject = () => {
     const blob = new Blob([code], { type: "text/plain" });
@@ -58,12 +61,16 @@ export default function Home() {
   };
 
   const handleApiKeySubmit = (key: string) => {
-    setApiKey(key);
     toast({
       title: "API Key Saved",
-      description: "Your OpenAI API key has been saved for this session.",
+      description: `Your ${selectedProvider} API key has been saved successfully.`,
     });
   };
+
+  useEffect(() => {
+    const key = getKeyForProvider(selectedProvider);
+    setShowApiKeyModal(!key);
+  }, [selectedProvider]);
 
   return (
     <div className="min-h-screen bg-zinc-950">
@@ -82,15 +89,15 @@ export default function Home() {
                 onProviderChange={setSelectedProvider}
                 onModelChange={setSelectedModel}
               />
-              <Button 
-                variant="outline" 
-                size="icon" 
+              <Button
+                variant="outline"
+                size="icon"
                 className="border-zinc-800 hover:border-emerald-500 hover:bg-zinc-900 transition-colors"
               >
                 <Settings className="h-4 w-4 text-zinc-400" />
               </Button>
-              <Button 
-                onClick={downloadProject} 
+              <Button
+                onClick={downloadProject}
                 className="bg-emerald-600 hover:bg-emerald-700 text-white transition-colors"
               >
                 <Download className="mr-2 h-4 w-4" />
@@ -137,9 +144,10 @@ export default function Home() {
       </div>
 
       <ApiKeyModal
-        open={showApiKeyModal && !apiKey}
+        open={showApiKeyModal}
         onOpenChange={setShowApiKeyModal}
         onSubmit={handleApiKeySubmit}
+        provider={selectedProvider}
       />
     </div>
   );
